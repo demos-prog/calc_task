@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import data from "../../data/data.json";
 import config from "../../data/config.json";
 import css from "./MainPage.module.css";
@@ -16,6 +17,7 @@ const MainPage = function () {
   const [length, setLenght] = useState(configLengthItem?.min);
   const [strength, setStrength] = useState("");
   const [numOfSheets, setNumOfSheets] = useState<number | null>(null);
+  const [pipesTotalLength, setPipesTotalLength] = useState<number | null>(null);
   const square = width! * length!;
 
   const handleWidtInput = (e: { target: { value: string } }) => {
@@ -41,30 +43,49 @@ const MainPage = function () {
     } else {
       setNumOfSheets(null);
     }
-  }, [list, width, length]);
+
+    if (pipe !== "" && strength !== "") {
+      const pipeWidth = data.find((i) => i.name === pipe)?.width! / 1000;
+      const step = config.find((i) => i.name === strength)?.step! - pipeWidth;
+
+      const pipesInWidth = Math.ceil(width! / step!) + 1;
+
+      const pipesInLength = Math.ceil(length! / step!) + 1;
+
+      const pipesTotalLength = pipesInWidth * length! + pipesInLength * width!;
+
+      setPipesTotalLength(pipesTotalLength);
+    } else {
+      setPipesTotalLength(null);
+    }
+  }, [pipe, strength, list, width, length]);
 
   return (
     <div className={css.mainFrame}>
       <div className={css.leftSection}>
         <div>
-          <select onChange={(e) => setList(e.target.value)}>
+          <select value={list} onChange={(e) => setList(e.target.value)}>
             <option value="">Choose sheet</option>
             {data
               .filter((i) => i.type === "list")
               .map((list) => (
-                <option value={list.name}>{list.name}</option>
+                <option key={uuidv4()} value={list.name}>
+                  {list.name}
+                </option>
               ))}
           </select>
           {list}
         </div>
 
         <div>
-          <select onChange={(e) => setPipe(e.target.value)}>
+          <select value={pipe} onChange={(e) => setPipe(e.target.value)}>
             <option value="">Choose pipe</option>
             {data
               .filter((i) => i.type === "pipe")
               .map((pipe) => (
-                <option value={pipe.name}>{pipe.name}</option>
+                <option key={uuidv4()} value={pipe.name}>
+                  {pipe.name}
+                </option>
               ))}
           </select>
           {pipe}
@@ -93,12 +114,17 @@ const MainPage = function () {
         </div>
 
         <div>
-          <select onChange={(e) => setStrength(e.target.value)}>
+          <select
+            value={strength}
+            onChange={(e) => setStrength(e.target.value)}
+          >
             <option value="">Choose strength</option>
             {config
               .filter((i) => i.type === "frame")
               .map((frame) => (
-                <option value={frame.name}>{frame.name}</option>
+                <option key={uuidv4()} value={frame.name}>
+                  {frame.name}
+                </option>
               ))}
           </select>
           {strength}
@@ -106,6 +132,9 @@ const MainPage = function () {
       </div>
       <div className={css.rightSection}>
         <div>{numOfSheets && <p>Количество листов: {numOfSheets}</p>}</div>
+        <div>
+          {pipesTotalLength && <p>Длинна труб (м): {pipesTotalLength}</p>}
+        </div>
       </div>
     </div>
   );
