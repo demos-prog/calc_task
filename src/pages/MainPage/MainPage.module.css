@@ -12,7 +12,13 @@ select {
   padding: 5px 10px;
 }
 
-.leftSection {
+input[type="number"] {
+  padding: 10px;
+  font-size: 20px;
+}
+
+.leftSection,
+.rightSection {
   width: 50%;
   background-color: blanchedalmond;
   display: flex;
