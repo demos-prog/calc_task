@@ -1,0 +1,23 @@
+.mainFrame {
+  background-color: burlywood;
+  display: flex;
+  min-height: 100vh;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 20px;
+}
+
+select {
+  width: 200px;
+  border: 1px solid #000;
+  padding: 5px 10px;
+}
+
+.leftSection {
+  width: 50%;
+  background-color: blanchedalmond;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
