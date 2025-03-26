@@ -19,6 +19,8 @@ const MainPage = function () {
   const [numOfSheets, setNumOfSheets] = useState<number | null>(null);
   const [pipesTotalLength, setPipesTotalLength] = useState<number | null>(null);
   const [fixAmount, setFixAmount] = useState<number | null>(null);
+  const [cellWidth, setCellWidth] = useState<number | null>(null);
+  const [cellLength, setCellLength] = useState<number | null>(null);
   const square = width! * length!;
 
   const handleWidtInput = (e: { target: { value: string } }) => {
@@ -56,7 +58,8 @@ const MainPage = function () {
     if (pipe !== "" && strength !== "") {
       const pipeWidth = data.find((i) => i.name === pipe)?.width! / 1000;
       const step = config.find((i) => i.name === strength)?.step! - pipeWidth;
-
+      setCellWidth(step);
+      setCellLength(step);
       const pipesInWidth = Math.ceil(width! / step!) + 1;
       const pipesInLength = Math.ceil(length! / step!) + 1;
       const pipesTotalLength = pipesInWidth * length! + pipesInLength * width!;
@@ -92,6 +95,17 @@ const MainPage = function () {
             ))}
         </select>
 
+        <select value={strength} onChange={(e) => setStrength(e.target.value)}>
+          <option value="">Выберите прочность</option>
+          {config
+            .filter((i) => i.type === "frame")
+            .map((frame) => (
+              <option key={uuidv4()} value={frame.name}>
+                {frame.name}
+              </option>
+            ))}
+        </select>
+
         <div>
           <p>Ширина</p>
           <input
@@ -111,23 +125,49 @@ const MainPage = function () {
             onChange={handleLenghtInput}
           />
         </div>
-
-        <select value={strength} onChange={(e) => setStrength(e.target.value)}>
-          <option value="">Выберите прочность</option>
-          {config
-            .filter((i) => i.type === "frame")
-            .map((frame) => (
-              <option key={uuidv4()} value={frame.name}>
-                {frame.name}
-              </option>
-            ))}
-        </select>
       </div>
       <div className={css.rightSection}>
-        <div>{numOfSheets && <p>Количество листов: {numOfSheets}</p>}</div>
-        <div>{numOfSheets && <p>Количество метизов: {fixAmount}</p>}</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Наименование</th>
+              <th>ед.</th>
+              <th>кол-во</th>
+              <th>сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            {numOfSheets && (
+              <tr>
+                <td>{list}</td>
+                <td>м2</td>
+                <td>{numOfSheets}</td>
+                <td>{square}</td>
+              </tr>
+            )}
+            {pipesTotalLength && (
+              <tr>
+                <td>{pipe}</td>
+                <td>мп</td>
+                <td>{}</td>
+                <td>{pipesTotalLength}</td>
+              </tr>
+            )}
+            {numOfSheets && (
+              <tr>
+                <td>Саморез</td>
+                <td>шт</td>
+                <td>{}</td>
+                <td>{fixAmount}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        <div>Итого: {square + (pipesTotalLength || 0) + (fixAmount || 0)}</div>
         <div>
-          {pipesTotalLength && <p>Длина труб (м): {pipesTotalLength}</p>}
+          {cellWidth && cellLength && (
+            <p>Размер ячейки (м): {`${cellWidth}х${cellLength}`}</p>
+          )}
         </div>
       </div>
     </div>
