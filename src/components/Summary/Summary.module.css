@@ -1,0 +1,16 @@
+.summary {
+  padding-top: 1.5rem;
+  border-top: 2px solid #e2e8f0;
+}
+
+.total {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.cellSize {
+  color: #64748b;
+  font-size: 1rem;
+} 

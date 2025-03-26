@@ -1,9 +1,25 @@
 .mainFrame {
-  background-color: burlywood;
   display: flex;
   min-height: 100vh;
-  font-family: "Times New Roman", Times, serif;
-  font-size: 20px;
+  background-color: #f5f5f5;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+.leftSection {
+  flex: 1;
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rightSection {
+  flex: 1;
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 select {
@@ -15,17 +31,6 @@ select {
 input[type="number"] {
   padding: 10px;
   font-size: 20px;
-}
-
-.leftSection,
-.rightSection {
-  width: 50%;
-  background-color: blanchedalmond;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 20px;
 }
 
 table {

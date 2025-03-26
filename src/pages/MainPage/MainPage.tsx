@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import data from "../../data/data.json";
 import config from "../../data/config.json";
 import css from "./MainPage.module.css";
+import CalculatorForm from "../../components/CalculatorForm/CalculatorForm";
+import ResultsTable from "../../components/ResultsTable/ResultsTable";
+import Summary from "../../components/Summary/Summary";
 
 const configWidthItem = config.find((i) => i.key === "width");
 const configLengthItem = config.find((i) => i.key === "length");
@@ -14,7 +16,7 @@ const MainPage = function () {
   //Width of construction
   const [width, setWidth] = useState(configWidthItem?.min);
   //Length of construction
-  const [length, setLenght] = useState(configLengthItem?.min);
+  const [length, setLength] = useState(configLengthItem?.min);
   const [strength, setStrength] = useState("");
   const [numOfSheets, setNumOfSheets] = useState<number | null>(null);
   const [pipesTotalLength, setPipesTotalLength] = useState<number | null>(null);
@@ -22,20 +24,6 @@ const MainPage = function () {
   const [cellWidth, setCellWidth] = useState<number | null>(null);
   const [cellLength, setCellLength] = useState<number | null>(null);
   const square = width! * length!;
-
-  const handleWidtInput = (e: { target: { value: string } }) => {
-    const inpValue = +e.target.value;
-    if (inpValue < configWidthItem?.min! || inpValue > configWidthItem?.max!)
-      return;
-    setWidth(inpValue);
-  };
-
-  const handleLenghtInput = (e: { target: { value: string } }) => {
-    const inpValue = +e.target.value;
-    if (inpValue < configLengthItem?.min! || inpValue > configLengthItem?.max!)
-      return;
-    setLenght(inpValue);
-  };
 
   useEffect(() => {
     if (list !== "") {
@@ -73,102 +61,35 @@ const MainPage = function () {
   return (
     <div className={css.mainFrame}>
       <div className={css.leftSection}>
-        <select value={list} onChange={(e) => setList(e.target.value)}>
-          <option value="">Выберите лист</option>
-          {data
-            .filter((i) => i.type === "list")
-            .map((list) => (
-              <option key={uuidv4()} value={list.name}>
-                {list.name}
-              </option>
-            ))}
-        </select>
-
-        <select value={pipe} onChange={(e) => setPipe(e.target.value)}>
-          <option value="">Выберите трубу</option>
-          {data
-            .filter((i) => i.type === "pipe")
-            .map((pipe) => (
-              <option key={uuidv4()} value={pipe.name}>
-                {pipe.name}
-              </option>
-            ))}
-        </select>
-
-        <select value={strength} onChange={(e) => setStrength(e.target.value)}>
-          <option value="">Выберите прочность</option>
-          {config
-            .filter((i) => i.type === "frame")
-            .map((frame) => (
-              <option key={uuidv4()} value={frame.name}>
-                {frame.name}
-              </option>
-            ))}
-        </select>
-
-        <div>
-          <p>Ширина</p>
-          <input
-            type="number"
-            placeholder="Width"
-            value={width}
-            onChange={handleWidtInput}
-          />
-        </div>
-
-        <div>
-          <p>Длина</p>
-          <input
-            type="number"
-            placeholder="Length"
-            value={length}
-            onChange={handleLenghtInput}
-          />
-        </div>
+        <CalculatorForm
+          list={list}
+          pipe={pipe}
+          strength={strength}
+          width={width!}
+          length={length!}
+          onListChange={setList}
+          onPipeChange={setPipe}
+          onStrengthChange={setStrength}
+          onWidthChange={setWidth}
+          onLengthChange={setLength}
+        />
       </div>
       <div className={css.rightSection}>
-        <table>
-          <thead>
-            <tr>
-              <th>Наименование</th>
-              <th>ед.</th>
-              <th>кол-во</th>
-              <th>сумма</th>
-            </tr>
-          </thead>
-          <tbody>
-            {numOfSheets && (
-              <tr>
-                <td>{list}</td>
-                <td>м2</td>
-                <td>{numOfSheets}</td>
-                <td>{square}</td>
-              </tr>
-            )}
-            {pipesTotalLength && (
-              <tr>
-                <td>{pipe}</td>
-                <td>мп</td>
-                <td>{}</td>
-                <td>{pipesTotalLength}</td>
-              </tr>
-            )}
-            {numOfSheets && (
-              <tr>
-                <td>Саморез</td>
-                <td>шт</td>
-                <td>{}</td>
-                <td>{fixAmount}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <div>Итого: {square + (pipesTotalLength || 0) + (fixAmount || 0)}</div>
-        <div>
-          {cellWidth && cellLength && (
-            <p>Размер ячейки (м): {`${cellWidth}х${cellLength}`}</p>
-          )}
-        </div>
+        <ResultsTable
+          list={list}
+          pipe={pipe}
+          numOfSheets={numOfSheets}
+          pipesTotalLength={pipesTotalLength}
+          fixAmount={fixAmount}
+          square={square}
+        />
+        <Summary
+          square={square}
+          pipesTotalLength={pipesTotalLength}
+          fixAmount={fixAmount}
+          cellWidth={cellWidth}
+          cellLength={cellLength}
+        />
       </div>
     </div>
   );
